@@ -14,6 +14,17 @@ function App(props) {
 		},
 	]);
 
+	const [playlistName, setPlaylistName] = useState('Current Playlist Title');
+
+	const [playlistTracks, setPlaylistTrack] = useState([
+		{
+			name: 'A Name',
+			artist: 'Kanye West',
+			album: 'Graduation',
+			id: 13,
+		},
+	]);
+
 	return (
 		<div>
 			<h1>
@@ -23,7 +34,7 @@ function App(props) {
 				<SearchBar />
 				<div className="App-playlist">
 					<SearchResults results={searchResults} />
-					<Playlist />
+					<Playlist playlistName={playlistName} tracklist={playlistTracks}/>
 				</div>
 			</div>
 		</div>
