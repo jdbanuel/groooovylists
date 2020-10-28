@@ -11,7 +11,9 @@ function TrackList(props) {
 						name={track.name}
 						artist={track.artist}
 						album={track.album}
+						id={track.id}
 						key={track.id}
+						onAdd={props.onAdd}
 					/>
 				);
 			})}
