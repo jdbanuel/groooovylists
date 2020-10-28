@@ -25,6 +25,18 @@ function App(props) {
 		},
 	]);
 
+	function addTrack(track){
+		for (const property in track){
+			console.log(`${property} --- ${track[property]}`);
+		}
+
+		const trackExists = playlistTracks.filter(singleTrack => (singleTrack.id === track.id));
+
+		if (!trackExists){
+			setPlaylistTrack(oldPlaylist => [...oldPlaylist, track]);
+		}
+	}
+
 	return (
 		<div>
 			<h1>
@@ -33,7 +45,7 @@ function App(props) {
 			<div className="App">
 				<SearchBar />
 				<div className="App-playlist">
-					<SearchResults results={searchResults} />
+					<SearchResults results={searchResults} onAdd={addTrack}/>
 					<Playlist playlistName={playlistName} tracklist={playlistTracks}/>
 				</div>
 			</div>
