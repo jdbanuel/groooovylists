@@ -14,7 +14,7 @@ function App(props) {
 		},
 	]);
 
-	const [playlistName, setPlaylistName] = useState('Current Playlist Title');
+	const [playlistName, setPlaylistName] = useState('New Playlist');
 
 	const [playlistTracks, setPlaylistTrack] = useState([
 		{
@@ -26,15 +26,22 @@ function App(props) {
 	]);
 
 	function addTrack(track){
-		for (const property in track){
-			console.log(`${property} --- ${track[property]}`);
-		}
-
 		const trackExists = playlistTracks.filter(singleTrack => (singleTrack.id === track.id));
 
-		if (!trackExists){
-			setPlaylistTrack(oldPlaylist => [...oldPlaylist, track]);
+		if (trackExists.length === 0){
+			setPlaylistTrack([...playlistTracks, track]);
 		}
+	}
+
+	function handleNameChange(event){
+		setPlaylistName(event.target.value);
+		event.preventDefault();
+	}
+
+	function removeTrack(track){
+		const updatedTrackList = playlistTracks.filter(singleTrack => (singleTrack.id != track.id));
+
+		setPlaylistTrack([...updatedTrackList]);
 	}
 
 	return (
@@ -45,8 +52,8 @@ function App(props) {
 			<div className="App">
 				<SearchBar />
 				<div className="App-playlist">
-					<SearchResults results={searchResults} onAdd={addTrack}/>
-					<Playlist playlistName={playlistName} tracklist={playlistTracks}/>
+					<SearchResults results={searchResults} onAdd={addTrack} />
+					<Playlist playlistName={playlistName} tracklist={playlistTracks} onRemove={removeTrack} handleChange={handleNameChange}/>
 				</div>
 			</div>
 		</div>
