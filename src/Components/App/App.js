@@ -5,39 +5,57 @@ import Playlist from '../Playlist/Playlist';
 import SearchResults from '../SearchResults/SearchResults';
 import Spotify from '../../util/Spotify';
 
-function App(props) {
+function App() {
     const [searchResults, setSearchResults] = useState([]);
 
     const [playlistName, setPlaylistName] = useState('New Playlist');
 
-    const [playlistTracks, setPlaylistTrack] = useState([]);
+    const [playlistTracks, setPlaylistTracks] = useState([]);
+
+    Spotify.getAccessToken();
 
     async function search(searchTerm) {
         const results = await Spotify.search(searchTerm);
 
         let resultArray;
 
-        resultArray = results.tracks.items.map((song) => {
-                        return {id: song.id,
-                            name: song.name,
-                            artist: song.artists[0].name,
-                            album: song.album.name,
-                            uri: song.uri}
-                        });
+        if (results.tracks) {
+            resultArray = results.tracks.items.map((song) => {
+                return {
+                    id: song.id,
+                    name: song.name,
+                    artist: song.artists[0].name,
+                    album: song.album.name,
+                    uri: song.uri,
+                };
+            });
 
-        console.log(resultArray)
-        
-        setSearchResults(resultArray);
+            setSearchResults(resultArray);
+        }
     }
 
-    function savePlaylist() {
+    async function savePlaylist() {
         const trackURIs = [];
 
+        const user = await Spotify.getUserID();
+        const userID = user.id;
+
+        const newlyCreatedPlaylist = await Spotify.createPlaylist(
+            playlistName,
+            userID
+        );
+        const playlistID = newlyCreatedPlaylist.id;
+
         playlistTracks.forEach((track) => {
-            trackURIs.push(track.id);
+            trackURIs.push(track.uri);
         });
 
-        return trackURIs;
+        await Spotify.addSongsToPlaylist(playlistID, trackURIs);
+
+        setPlaylistName('New Playlist');
+        setPlaylistTracks([]);
+
+        return;
     }
 
     function addTrack(track) {
@@ -45,8 +63,10 @@ function App(props) {
             (singleTrack) => singleTrack.id === track.id
         );
 
+        console.log(track);
+
         if (trackExists.length === 0) {
-            setPlaylistTrack([...playlistTracks, track]);
+            setPlaylistTracks([...playlistTracks, track]);
         }
     }
 
@@ -60,7 +80,7 @@ function App(props) {
             (singleTrack) => singleTrack.id !== track.id
         );
 
-        setPlaylistTrack([...updatedTrackList]);
+        setPlaylistTracks([...updatedTrackList]);
     }
 
     return (
@@ -77,6 +97,7 @@ function App(props) {
                         tracklist={playlistTracks}
                         onRemove={removeTrack}
                         handleChange={handleNameChange}
+                        onSave={savePlaylist}
                     />
                 </div>
             </div>
