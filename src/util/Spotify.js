@@ -95,8 +95,6 @@ let Spotify = {
                 Authorization: `Bearer ${userAccessToken}`,
             },
             body: JSON.stringify(trackData),
-        }).then((response) => {
-            return response.json();
         });
     },
 };

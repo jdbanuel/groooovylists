@@ -4,6 +4,9 @@ import SearchBar from '../SearchBar/SearchBar';
 import Playlist from '../Playlist/Playlist';
 import SearchResults from '../SearchResults/SearchResults';
 import Spotify from '../../util/Spotify';
+import ReactNotification from 'react-notifications-component';
+import 'react-notifications-component/dist/theme.css';
+import { store } from 'react-notifications-component';
 
 function App() {
     const [searchResults, setSearchResults] = useState([]);
@@ -50,7 +53,40 @@ function App() {
             trackURIs.push(track.uri);
         });
 
-        await Spotify.addSongsToPlaylist(playlistID, trackURIs);
+        const addSongs = await Spotify.addSongsToPlaylist(playlistID, trackURIs)
+            .then(() => {
+                store.addNotification({
+                    title: 'Success!',
+                    message: 'Your playlist has been saved!',
+                    type: 'success',
+                    insert: 'top',
+                    container: 'top-right',
+                    animationIn: ['animate__animated', 'animate__fadeIn'],
+                    animationOut: ['animate__animated', 'animate__fadeOut'],
+                    dismiss: {
+                        duration: 5000,
+                        onScreen: true,
+                    },
+                });
+            })
+            .catch((error) => {
+                console.log(error);
+                store.addNotification({
+                    title: 'Oops!',
+                    message: 'There was an issue creating your playlist.',
+                    type: 'danger',
+                    insert: 'top',
+                    container: 'top-right',
+                    animationIn: ['animate__animated', 'animate__fadeIn'],
+                    animationOut: ['animate__animated', 'animate__fadeOut'],
+                    dismiss: {
+                        duration: 5000,
+                        onScreen: true,
+                    },
+                });
+            });
+
+        console.log(`The value of addSongs is ${JSON.stringify(addSongs)}`);
 
         setPlaylistName('New Playlist');
         setPlaylistTracks([]);
@@ -85,6 +121,7 @@ function App() {
 
     return (
         <div>
+            <ReactNotification />
             <h1>
                 gr<span className="highlight">oooo</span>vyLists
             </h1>
