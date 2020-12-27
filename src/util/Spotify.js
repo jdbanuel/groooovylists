@@ -1,9 +1,7 @@
-import { apiCredentials } from './credentials';
-
 let userAccessToken, expiresIn;
 
 const redirectURI = 'http://localhost:3000/';
-const clientID = apiCredentials.clientID;
+const clientID = process.env.REACT_APP_CLIENT_ID;
 
 let Spotify = {
     getAccessToken() {
