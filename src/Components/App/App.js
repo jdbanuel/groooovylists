@@ -15,8 +15,6 @@ function App() {
 
     const [playlistTracks, setPlaylistTracks] = useState([]);
 
-    Spotify.getAccessToken();
-
     async function search(searchTerm) {
         const results = await Spotify.search(searchTerm);
 
@@ -39,6 +37,8 @@ function App() {
 
     async function savePlaylist() {
         const trackURIs = [];
+
+        Spotify.getAccessToken();
 
         const user = await Spotify.getUserID();
         const userID = user.id;
