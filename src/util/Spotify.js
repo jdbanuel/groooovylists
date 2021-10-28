@@ -1,7 +1,13 @@
-let userAccessToken, expiresIn;
+import { apiCredentials } from './credentials';
 
-const redirectURI = 'https://groooovylists.netlify.app';
-const clientID = process.env.REACT_APP_CLIENT_ID;
+let userAccessToken, expiresIn;
+const redirectURI =
+    process.env.REACT_APP_CLIENT_ID !== undefined
+        ? 'https://groooovylists.netlify.app'
+        : 'http://localhost:3000/';
+const clientID = process.env.REACT_APP_CLIENT_ID || apiCredentials.clientID;
+
+console.log(apiCredentials);
 
 let Spotify = {
     getAccessToken() {
